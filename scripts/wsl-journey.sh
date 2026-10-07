@@ -17,7 +17,7 @@ export PATH="/opt/node-v${node_version}-linux-${arch}/bin:$PATH"
 node --version
 # Linux-owned source/state/dependencies; don't install node_modules on /mnt/c.
 mkdir -p /root/a100tests
-cp -R "$1"/. /root/a100tests/
+tar -C "$1" --exclude=node_modules --exclude=.git --exclude=artifacts -cf - . | tar -C /root/a100tests -xf -
 cd /root/a100tests
 rm -rf node_modules artifacts
 npm ci --ignore-scripts --no-audit --no-fund

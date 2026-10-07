@@ -20,6 +20,12 @@ try {
     & wsl.exe -d Ubuntu -u root --exec bash "$linuxPath/scripts/wsl-journey.sh" "$linuxPath" "$env:A100_VERSION" 2>&1 | Out-File -Encoding utf8 artifacts/wsl-journey.log
     $report.journeyExit = $LASTEXITCODE
     if ($LASTEXITCODE -ne 0) { throw "WSL package journey failed: $LASTEXITCODE" }
+    $report.stage = 'non-root-journey'
+    & wsl.exe -d Ubuntu -u root --exec bash "$linuxPath/scripts/wsl-user-journey.sh" "$linuxPath" "$env:A100_VERSION" 2>&1 | Out-File -Encoding utf8 artifacts/wsl-user-setup.log
+    $report.nonRootExit = $LASTEXITCODE
+    if ($LASTEXITCODE -ne 0) { throw "Non-root WSL journey failed: $LASTEXITCODE" }
+    $report.stage = 'windows-loopback'
+    & ./scripts/wsl-loopback.ps1
     $report.result = 'PASS'
     $report.stage = 'completed'
     Save-Report
