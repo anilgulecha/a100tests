@@ -43,6 +43,19 @@ Proposed future terminal prompt: “Agent 100 requires WSL on Windows. May we he
 
 The Windows detection job is green because it successfully recorded the expected blocked state; this is **not** a Windows runtime pass. These are smoke results, not universal support certification. No native-platform package fixes were needed for the paths exercised.
 
+## Ubuntu setup spike — 2026-10-07
+
+[Actions run 37641163509](https://github.com/anilgulecha/a100tests/actions/runs/37641163509) **PASS**:
+
+- Native Windows `wsl --install -d Ubuntu --web-download --no-launch` installed Ubuntu.
+- `wsl -d Ubuntu -u root --exec sh -lc 'uname -a; cat /etc/os-release'` launched it, without a reboot.
+- Installed checksum-verified Node 24.21.0 and rg/fd inside Ubuntu; installed the published 1.5.1 package and Linux Chromium.
+- All three package smoke tests passed inside WSL (CLI/studio, real tools/codemode/Stop/continuation/restart, missing-binary errors).
+- CI runs as distro root solely to bypass interactive first-user creation. This is **not** the proposed real-user default. Elevation/UAC on a non-admin machine, reboot/resume when WSL is absent, Linux user creation and Windows-host browser/loopback access remain untested.
+- Two earlier harness failures were fixed: CRLF shell scripts and CRLF CSV changing digest-pinned fixture bytes. `.gitattributes` now preserves LF.
+
+Manual workflow `wsl-setup.yml` is the only installer lane; ordinary platform probes remain non-mutating. No changes to A100's production Windows launcher have been made.
+
 ## Next steps after first results
 
 1. Inspect Linux/macOS failures; propose minimal fixes upstream without rebuilding the package here.
