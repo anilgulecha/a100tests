@@ -31,6 +31,18 @@ Inside WSL, use the Linux instructions. From native Windows, `npm run test:windo
 
 Proposed future terminal prompt: “Agent 100 requires WSL on Windows. May we help set it up, install Node inside it, and launch Agent 100 there?” No installation/reboot without explicit consent. Distribution selection, elevation, reboot/resume, state ownership and Windows-browser loopback reachability need real-machine work; hosted runner virtualization may not permit full WSL setup.
 
+## First run results — 2026-10-07
+
+[Actions run 37634473102](https://github.com/anilgulecha/a100tests/actions/runs/37634473102), published **1.5.1**:
+
+| Platform | Result |
+|---|---|
+| Ubuntu hosted runner | 3/3 package tests passed |
+| macOS hosted runner | 3/3 package tests passed (about 6 seconds test duration) |
+| Windows hosted runner | WSL command present, **no distribution installed**; full WSL journey **BLOCKED**, no setup performed |
+
+The Windows detection job is green because it successfully recorded the expected blocked state; this is **not** a Windows runtime pass. These are smoke results, not universal support certification. No native-platform package fixes were needed for the paths exercised.
+
 ## Next steps after first results
 
 1. Inspect Linux/macOS failures; propose minimal fixes upstream without rebuilding the package here.
