@@ -11,6 +11,11 @@ function Start-LinuxService {
     $stderr = $process.StandardError.ReadToEndAsync()
     $line = $process.StandardOutput.ReadLineAsync()
     if (-not $line.Wait(30000)) { $process.Kill($true); throw 'WSL service startup deadline' }
+    if ([string]::IsNullOrWhiteSpace($line.Result)) {
+        $process.WaitForExit(5000) | Out-Null
+        if (-not $stderr.Wait(5000)) { $process.Kill($true); throw 'WSL service closed stdout; stderr deadline' }
+        throw "WSL service closed stdout: $($stderr.Result)"
+    }
     $ready = $line.Result | ConvertFrom-Json
     if (-not $ready.ready -or $ready.uid -eq 0) { $process.Kill($true); throw 'Expected ready non-root service' }
     return @{ process=$process; ready=$ready; stderr=$stderr }
