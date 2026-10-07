@@ -56,6 +56,17 @@ The Windows detection job is green because it successfully recorded the expected
 
 Manual workflow `wsl-setup.yml` is the only installer lane; ordinary platform probes remain non-mutating. No changes to A100's production Windows launcher have been made.
 
+## Extended WSL / Windows browser spike — 2026-10-07
+
+[Actions run 37648174695](https://github.com/anilgulecha/a100tests/actions/runs/37648174695) **PASS**:
+
+- Full published-package journey as a non-root Linux user (4 tests, including setup decision-model test).
+- Native Windows Chromium loads the WSL-hosted studio and fetches its host API over Windows `127.0.0.1`.
+- Service shutdown/relaunch through the Windows process/pipe control path preserves Linux-user-owned state.
+- Synthetic consent/decline/distribution/reboot branch tests pass, but they are decision-model tests, **not proof of real UAC or reboot UI**.
+
+Normal desktop first-user onboarding, an absent-WSL machine's elevation/reboot path, and production launcher's argument/Ctrl-C forwarding remain implementation/manual acceptance tasks. Hosted CI already has WSL enabled. No A100 package/runtime modifications were needed for the executed paths.
+
 ## Next steps after first results
 
 1. Inspect Linux/macOS failures; propose minimal fixes upstream without rebuilding the package here.
