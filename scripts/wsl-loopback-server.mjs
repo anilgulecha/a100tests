@@ -7,8 +7,8 @@ const stateRoot=join(homedir(),'a100 loopback ü');
 await mkdir(stateRoot,{recursive:true});
 const marker=join(stateRoot,'persist.txt');
 let old='';try{old=await readFile(marker,'utf8');}catch(error){if(error.code!=='ENOENT')throw error;}
-await writeFile(marker,'synthetic persisted marker');
 const server=await startServer({port:4321,stateRoot,staticDir:join(import.meta.dirname,'../node_modules/@kalviumjr/agent100/ui-dist'),log:()=>{}});
+await writeFile(marker,'synthetic persisted marker');
 console.log(JSON.stringify({ready:true,url:server.url,uid:process.getuid(),persisted:old==='synthetic persisted marker'}));
 process.stdin.resume();
 let closing=false;
