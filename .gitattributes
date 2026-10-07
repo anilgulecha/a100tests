@@ -1,3 +1,5 @@
+# Fixture bytes are digest-pinned; preserve LF for every text file, including CSV.
+* text=auto eol=lf
 *.sh text eol=lf
 *.mjs text eol=lf
 *.json text eol=lf
