@@ -1,0 +1,55 @@
+{
+  "schema": "agent100.checks/v1",
+  "synthetic": true,
+  "sealedValues": {
+    "reportedTotal": 1150,
+    "rawTotal": 1737,
+    "missingUnits": 587
+  },
+  "checks": [
+    {
+      "id": "workspace-verification",
+      "kind": "command",
+      "argv": [
+        "deno",
+        "run",
+        "--allow-read",
+        "verify.ts"
+      ],
+      "expect": {
+        "exitCode": 0
+      }
+    },
+    {
+      "id": "recorded-figures",
+      "kind": "json",
+      "path": "finding.json",
+      "assertions": [
+        {
+          "pointer": "/reportedTotal",
+          "operator": "equals-sealed",
+          "valueRef": "reportedTotal"
+        },
+        {
+          "pointer": "/rawTotal",
+          "operator": "equals-sealed",
+          "valueRef": "rawTotal"
+        },
+        {
+          "pointer": "/missingUnits",
+          "operator": "equals-sealed",
+          "valueRef": "missingUnits"
+        }
+      ]
+    },
+    {
+      "id": "synthetic-data-pinned",
+      "kind": "file",
+      "path": "sales.csv",
+      "expect": {
+        "exists": true,
+        "sha256": "3ea1e8fdc77b7e537cc5fccede28500bda2c3c9a0e418059f01f2f402882d783"
+      }
+    }
+  ]
+}

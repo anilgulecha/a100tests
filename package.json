@@ -1,0 +1,8 @@
+{
+  "name": "a100-platform-spike",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.21.0" },
+  "scripts": { "test": "node --test --test-concurrency=1 --test-timeout=90000 tests/*.test.mjs", "test:windows": "node scripts/windows-probe.mjs" },
+  "devDependencies": { "@kalviumjr/agent100": "1.5.1", "adm-zip": "0.5.16", "playwright": "1.63.0" }
+}

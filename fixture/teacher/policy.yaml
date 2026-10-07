@@ -1,0 +1,9 @@
+# SYNTHETIC bounded observation settings.
+schema: agent100.teacher-policy/v1
+observation:
+  limits:
+    maxObservationBytes: 16384
+    maxTools: 24
+    maxPaths: 32
+    maxToolOutputChars: 2048
+    maxFinalResponseChars: 4096

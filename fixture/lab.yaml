@@ -1,0 +1,10 @@
+# SYNTHETIC runtime plumbing fixture, not curriculum or learner certification.
+schema: agent100.lab-source/v1
+id: synthetic-tally
+version: 1
+title: SYNTHETIC counter harness
+summary: Synthetic two-step fixture for deterministic runtime tests only.
+agent:
+  tools: [codemode]
+workspace:
+  maxBytes: 65536

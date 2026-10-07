@@ -1,0 +1,33 @@
+# SYNTHETIC state-machine mechanics only.
+schema: agent100.tasks/v1
+tasks:
+  - id: plan
+    title: SYNTHETIC inspect
+    goal: Collect synthetic file and command evidence.
+    prompt: Read report.ts and sales.csv and run deno run --allow-read report.ts.
+    work:
+      preSend: review
+    progression:
+      owner: teacher
+      nextTaskId: explain
+    evidenceRequired:
+      - kind: file-inspected
+        path: report.ts
+      - kind: file-inspected
+        path: sales.csv
+      - kind: tool-success
+        command: deno run --allow-read report.ts
+  - id: explain
+    title: SYNTHETIC record
+    goal: Exercise synthetic write and verification operations.
+    prompt: Save finding.json and run deno run --allow-read verify.ts.
+    work:
+      preSend: direct
+    progression:
+      owner: teacher
+      nextTaskId: null
+    evidenceRequired:
+      - kind: file-inspected
+        path: finding.json
+      - kind: tool-success
+        command: deno run --allow-read verify.ts

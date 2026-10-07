@@ -1,0 +1,82 @@
+name: Published Agent 100 platform spike
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact published Agent 100 version
+        required: true
+        default: '1.5.1'
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: a100-spike-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      A100_VERSION: ${{ inputs.version || '1.5.1' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install exact requested published version
+        shell: bash
+        run: |
+          node --input-type=module -e 'if(!/^\d+\.\d+\.\d+$/.test(process.env.A100_VERSION)) process.exit(1)'
+          npm install --no-save --ignore-scripts --no-audit --no-fund "@kalviumjr/agent100@$A100_VERSION"
+      - name: Search prerequisites
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            brew install ripgrep fd
+          else
+            sudo apt-get update
+            sudo apt-get install -y ripgrep fd-find
+          fi
+      - run: npx playwright install --with-deps chromium
+      - name: Serial published-package journey
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          npm test 2>&1 | tee artifacts/tests.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence-${{ matrix.os }}
+          path: artifacts/
+          retention-days: 7
+  windows-detection:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.21.0'
+      - name: Probe WSL without changing the machine
+        shell: pwsh
+        run: |
+          node scripts/windows-probe.mjs
+          $result = $LASTEXITCODE
+          if ($result -eq 3) {
+            'WSL journey BLOCKED on this hosted runner; not a platform pass.' | Out-File -Append $env:GITHUB_STEP_SUMMARY
+            exit 0
+          }
+          exit $result
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence-windows-detection
+          path: artifacts/
+          retention-days: 7
